@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/acikkaynak/backend-api-go/broker"
 	"github.com/acikkaynak/backend-api-go/cache"
