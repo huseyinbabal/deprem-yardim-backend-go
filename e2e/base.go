@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/testcontainers/testcontainers-go"
+	tc "github.com/testcontainers/testcontainers-go/modules/compose"
 	"io"
 	"net/http"
 	"strings"
@@ -13,7 +13,7 @@ import (
 
 // TestSuite base test suite
 type TestSuite struct {
-	compose *testcontainers.LocalDockerCompose
+	compose *tc.LocalDockerCompose
 	Client  *Client
 }
 
@@ -21,11 +21,17 @@ type TestSuite struct {
 func (t *TestSuite) SetupBaseSuite() error {
 	composeFilePaths := []string{"../resources/docker-compose.yml"}
 	identifier := strings.ToLower(uuid.New().String())
-	t.compose = testcontainers.NewLocalDockerCompose(composeFilePaths, identifier)
-	execError := t.compose.WithCommand([]string{"up", "-d"}).Invoke()
-	if execError.Error != nil {
-		return execError.Error
+	t.compose = tc.NewLocalDockerCompose(composeFilePaths, identifier)
+
+	execError := t.compose.
+		WithCommand([]string{"up", "-d"}).
+		Invoke()
+
+	err := execError.Error
+	if err != nil {
+		return fmt.Errorf("could not run compose file: %v - %v", composeFilePaths, err)
 	}
+
 	time.Sleep(5 * time.Second) // No health check for scratch images.
 	t.Client = NewClient("http://localhost:80")
 	return nil
@@ -33,6 +39,7 @@ func (t *TestSuite) SetupBaseSuite() error {
 
 // TearDownBaseSuite tear down method for tests
 func (t *TestSuite) TearDownBaseSuite() error {
+
 	execError := t.compose.
 		WithCommand([]string{"down"}).
 		Invoke()
