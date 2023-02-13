@@ -121,18 +121,18 @@ func (repo *Repository) GetLocations(getLocationsQuery *GetLocationsQuery) ([]fe
 		splitted := strings.Split(getLocationsQuery.Reason, ",")
 		splittedFormatted := make([]string, 0, len(splitted))
 		for _, s := range splitted {
-			splittedFormatted = append(splittedFormatted, "'%"+s+"%'")
+			splittedFormatted = append(splittedFormatted, "%"+s+"%")
 		}
-		selectBuilder = selectBuilder.Where("reason ILIKE ANY(?)", strings.Join(splittedFormatted, ","))
+		selectBuilder = selectBuilder.Where("reason ILIKE ANY(?)", splittedFormatted)
 	}
 
 	if getLocationsQuery.Channel != "" {
 		splitted := strings.Split(getLocationsQuery.Channel, ",")
 		splittedFormatted := make([]string, 0, len(splitted))
 		for _, s := range splitted {
-			splittedFormatted = append(splittedFormatted, "'%"+s+"%'")
+			splittedFormatted = append(splittedFormatted, "%"+s+"%")
 		}
-		selectBuilder = selectBuilder.Where("channel ILIKE ANY(?)", strings.Join(splittedFormatted, ","))
+		selectBuilder = selectBuilder.Where("channel ILIKE ANY(?)", splittedFormatted)
 	}
 
 	if getLocationsQuery.IsLocationVerified != "" {
