@@ -1,14 +1,15 @@
 version: "3.9"
 services:
-  app:
+  api:
     depends_on:
       postgres:
         condition: service_healthy
     build: ../../
     environment:
-      DB_CONN_STR: postgres://postgres:s3cr3t@postgres:5432/afetyardim
+      DB_CONN_STR: "postgres://postgres:s3cr3t@postgres:5432/afetyardim"
+      KAFKA_BROKERS: "localhost:9092"
     ports:
-      - "80:80"
+      - "8081:80"
   postgres:
     image: postgres:15.1
     environment:
@@ -19,3 +20,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 20
+    volumes:
+      - ../../resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./resources/data.sql:/docker-entrypoint-initdb.d/data.sql

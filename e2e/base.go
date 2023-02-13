@@ -33,7 +33,7 @@ func (t *TestSuite) SetupBaseSuite() error {
 	}
 
 	time.Sleep(5 * time.Second) // No health check for scratch images.
-	t.Client = NewClient("http://localhost:80")
+	t.Client = NewClient("http://localhost:8081")
 	return nil
 }
 
