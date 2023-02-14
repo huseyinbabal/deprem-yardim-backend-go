@@ -21,5 +21,4 @@ services:
       timeout: 5s
       retries: 20
     volumes:
-      - ../../resources/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./resources/data.sql:/docker-entrypoint-initdb.d/data.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
